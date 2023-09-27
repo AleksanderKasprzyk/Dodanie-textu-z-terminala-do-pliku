@@ -3,11 +3,15 @@ import sys
 input_file, output_file, variables = sys.argv[1], sys.argv[2], sys.argv[3:]
 
 user_input = sys.argv[3:]
-if not user_input:
-    print("Error: Value is required.")
+if not user_input or not sys.argv[1] == "in.csv" or not sys.argv[2] == "out.csv":
+    print(f"Error: Wrong value is required. Your input arguments: {sys.argv[1]}, {sys.argv[2]}, {sys.argv[3:]}")
+    print("in.csv or out.csv or values (variables)")
+    print("Values for example: 0,0,gitara 3,1,kubek. First numbers are rows and columns.")
 
-elif user_input:
+elif user_input and sys.argv[1] == "in.csv" and sys.argv[2] == "out.csv":
     operation_list = []
+    print(input_file, output_file, variables)
+    print(type(input_file), type(output_file), type(variables))
     with open('input.csv', mode='r+') as file_stream:
 
         input_date = file_stream.read()
@@ -16,13 +20,16 @@ elif user_input:
             element = element.split(",")
             operation_list.append(element)
 
-
     for operation in variables:
-        row, column, value = operation.split(",")
-        row = int(row)
-        column = int(column)
-        operation_list[row][column] = value
 
+        try:
+            row, column, value = operation.split(",")
+            row = int(row)
+            column = int(column)
+            operation_list[row][column] = value
+        except ValueError:
+            print(f"Error: wrong row ({row}) or column ({column}). Only numbers. ")
+            sys.exit(1)
 
     with open('output.csv', mode="w") as file_stream:
         #output_file = file_stream.write(f"{input_date} \n")
